@@ -65,9 +65,9 @@ program Dirac
     !------------------------------------------------
     ! Definimos las condiciones iniciales (con simetrías).
     m(1) = (dos*tercio)*(F1**2)*(r(1)**3)*w
-    s(1) = uno + tercio*(F1**2)*(cuatro*w - uno)*(r(1)**2)
+    s(1) = uno + (F1**2)*(dos*w - uno)*(r(1)**2)
     F(1) = F1*r(1)
-    G(1) = tercio*F1*(w - uno)*(r(1)**2)
+    G(1) = medio*F1*(w - uno)*(r(1)**2)
 
     m(0) = -m(1)
     s(0) =  s(1)
