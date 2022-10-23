@@ -36,8 +36,6 @@ program Dirac
     tercio = 1.0D0/3.0D0
     sexto  = 1.0D0/6.0D0
 
-    allocate( r(0:Nr), m(0:Nr), s(0:Nr), F(0:Nr), G(0:Nr))
-
     print *, 'Escribe el valor de F1'
     read(*,*) F1
     print *
@@ -46,22 +44,30 @@ program Dirac
     read(*,*) w
     print *
 
-    print *, 'Escribe el valor de Nr'
-    read(*,*) Nr
-    print *
-
     print *, 'Escribe el valor de rmax'
     read(*,*) rmax
     print *
 
+    print *, 'Escribe el valor de Nr'
+    read(*,*) Nr
+    print *
+
+    allocate( r(0:Nr), m(0:Nr), s(0:Nr), F(0:Nr), G(0:Nr))
+
     dr = rmax/dble(Nr)
+
+    !---------------------------------------------------------------
+    ! Llenamos el parámetro
+    do i=0, Nr
+        r(i) = dble(i)*dr - medio*dr
+    end do
 
     !------------------------------------------------
     ! Definimos las condiciones iniciales (con simetrías).
-    m(1) = (dos*tercio)*(F1**2)*(dr**3)*w
-    s(1) = uno + tercio*(F1**2)*(cuatro*w - uno)*(dr**2)
-    F(1) = F1*dr
-    G(1) = tercio*F1*(w - uno)*(dr**2)
+    m(1) = (dos*tercio)*(F1**2)*(r(1)**3)*w
+    s(1) = uno + tercio*(F1**2)*(cuatro*w - uno)*(r(1)**2)
+    F(1) = F1*r(1)
+    G(1) = tercio*F1*(w - uno)*(r(1)**2)
 
     m(0) = -m(1)
     s(0) =  s(1)
@@ -69,14 +75,8 @@ program Dirac
     G(0) =  G(1)
 
     !---------------------------------------------------------------
-    ! Llenamos el parámetro
-    do i=0, Nr-1
-        r(i+1) = r(i) + dr
-    end do
-
-    !---------------------------------------------------------------
     ! Hacemos el método de Runge-Kutta en sí
-    do i=0, Nr-1
+    do i=1, Nr-1
 
         !------------------------------------------------
         call derivadasD(w, r(i), m(i), s(i), F(i), G(i), &
@@ -124,9 +124,9 @@ program Dirac
 
     !---------------------------------------------------------------
     ! Imprimimos en un archivo
-    open(10, file='sol.dat')
+    open(10, file = 'sol.dat', form = 'formatted', status = 'replace')
 
-    do i=0, Nr
+    do i=1, Nr
 
         write(10,*) r(i), m(i), s(i), F(i), G(i)
 
